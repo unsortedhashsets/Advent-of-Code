@@ -55,10 +55,8 @@ func main() {
 
     readFile.Close()
 	
-	fmt.Println("1) Find the Elf carrying the most Calories. How many total Calories is that Elf carrying?")
-	fmt.Println("Elf is carrying:", maxCalories, "Calories")
-
 	lastThree := caloriesArray[len(caloriesArray) - 1] + caloriesArray[len(caloriesArray) - 2] + caloriesArray[len(caloriesArray) - 3]
-	fmt.Println("2) Find the top three Elves carrying the most Calories. How many Calories are those Elves carrying in total?")
-	fmt.Println("Those elves are carrying:", lastThree, "Calories")
+	
+	fmt.Println(maxCalories)
+	fmt.Println(lastThree)
 }
