@@ -51,7 +51,6 @@ func (n *node) calculateSizeWithSizeDetect(sizeAtMost int, sizeMore int, searchR
 
 func main(){
 	
-	//structure := []*node{}
 	var actualNode *node
 
 	readFile, err := os.Open("input.txt")
