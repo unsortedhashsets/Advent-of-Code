@@ -53,6 +53,13 @@ func main(){
 	H := Coordinate{0, 0}
 	T := Coordinate{0, 0}
 	tailTrack[T] = true
+	
+	//Part two
+	tailNineKnotTrack := make(map[Coordinate]bool)
+	knots := make([]Coordinate, 8)
+	for i := range knots {
+		knots[i] = Coordinate{0, 0}
+	}
 
 	readFile, err := os.Open("input.txt")
 	
@@ -81,11 +88,21 @@ func main(){
 			
 			T = tailCatchUp(H, T)
 			tailTrack[T] = true
+
+			for i := range knots[:len(knots)] {
+				if i == 0 {
+					knots[i] = tailCatchUp(T, knots[i])
+				} else {
+					knots[i] = tailCatchUp(knots[i-1], knots[i])
+				}
+			}
+			tailNineKnotTrack[knots[7]] = true
 		}
 	}
 	
 	readFile.Close()
 	
 	fmt.Println(len(tailTrack))
+	fmt.Println(len(tailNineKnotTrack))
 }
 
