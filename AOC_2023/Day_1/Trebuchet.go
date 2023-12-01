@@ -4,29 +4,29 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 	"unicode"
 )
 
-var digitMap = map[string]string{
-	"one":   "1",
-	"two":   "2",
-	"three": "3",
-	"four":  "4",
-	"five":  "5",
-	"six":   "6",
-	"seven": "7",
-	"eight": "8",
-	"nine":  "9",
+var digitMap = map[string]int{
+	"one":   1,
+	"two":   2,
+	"three": 3,
+	"four":  4,
+	"five":  5,
+	"six":   6,
+	"seven": 7,
+	"eight": 8,
+	"nine":  9,
 }
 
-func replaceWordsWithDigits(line string) string {
-	result := ""
+func getCalibrationValue_Two(line string) int {
+	var result []int
 	currentWord := ""
+	output := 0
 	for _, r := range line {
 		if unicode.IsDigit(r) {
-			result += string(r)
+			result = append(result, int(r-'0'))
 		} else {
 			currentWord += string(r)
 			test := false
@@ -34,49 +34,43 @@ func replaceWordsWithDigits(line string) string {
 				if strings.HasPrefix(word, currentWord) {
 					test = true
 					if word == currentWord {
-						result += digit
+						result = append(result, digit)
 						currentWord = string(r)
 					}
 					break
 				}
 			}
 			if !test {
-				result += string(currentWord[0])
 				currentWord = currentWord[1:]
 			}
 		}
 	}
-	return result
+	if len(result) > 0 {
+		output = result[0]*10 + result[len(result)-1]
+	}
+	return output
 }
 
-func getCalibrationValue(line string) (int, error) {
-	firstDigit, lastDigit := -1, -1
+func getCalibrationValue_One(line string) int {
+	var result []int
+	output := 0
 	for _, r := range line {
 		if unicode.IsDigit(r) {
-			if firstDigit == -1 {
-				firstDigit = int(r - '0')
-			}
-			lastDigit = int(r - '0')
+			result = append(result, int(r-'0'))
 		}
 	}
-	if firstDigit != -1 && lastDigit != -1 {
-		return strconv.Atoi(fmt.Sprintf("%d%d", firstDigit, lastDigit))
+	if len(result) > 0 {
+		output = result[0]*10 + result[len(result)-1]
 	}
-	return 0, fmt.Errorf("no calibration value found")
+	return output
 }
 
 func processLines(scanner *bufio.Scanner) (int, int) {
-	one := 0
-	two := 0
+	one, two := 0, 0
 	for scanner.Scan() {
 		line := scanner.Text()
-		calibrationValueOne, err := getCalibrationValue(line)
-		line = replaceWordsWithDigits(line)
-		calibrationValueTwo, err := getCalibrationValue(line)
-		if err == nil {
-			one += calibrationValueOne
-			two += calibrationValueTwo
-		}
+		one += getCalibrationValue_One(line)
+		two += getCalibrationValue_Two(line)
 	}
 	return one, two
 }
@@ -96,7 +90,6 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-
 	fmt.Printf("Part One: %d\n", one)
 	fmt.Printf("Part Two: %d\n", two)
 }
